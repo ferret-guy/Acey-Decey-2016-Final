@@ -3,13 +3,13 @@
 #include<time.h>
 
 
-typedef struct card_s {
+typedef struct card_s {				//creates a card type including a suit, face value, and pointer
 	char suit;
 	int face;
 	struct card_s* listP;
 } card;
 
-void card_create(card* thisCard, char inSuit, int inFace, card* nextCard) {
+void card_create(card* thisCard, char inSuit, int inFace, card* nextCard) {		//creates a card with given face, suit, and pointer
 	thisCard->face = inFace;
 	thisCard->suit = inSuit;
 	thisCard->listP = nextCard;
@@ -22,6 +22,18 @@ void card_insertAfter(card* thisCard, card* newCard) {
 	tmpNext = thisCard->listP;
 	thisCard->listP = newCard;
 	newCard->listP = tmpNext;
+	return;
+}
+
+void swap_cards(card* card1, card* card2){
+	card tmpCard;
+	tmpCard->face = card1->face;
+	tmpCard->suit = card1->suit;
+	tmpCard->listP = NULL;
+	card1->face = card2->face;
+	card1->suit = card2->suit;
+	card2->face = tmpCard->face;
+	card2->suit = tmpCard->suit;
 	return;
 }
 
@@ -64,7 +76,12 @@ void shuffle_deck(card* deck[]) {
 }
 
 void shuffle_deck2(card* deck[]){
-	
+	srand((int)time(0));
+	card* tmp 
+	int i = 0;
+	for(i = 0; i < 52; i++){
+		
+	}
 }
 
 void create_deck(card* deck[]) {
