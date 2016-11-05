@@ -27,13 +27,13 @@ void card_insertAfter(card* thisCard, card* newCard) {
 
 void swap_cards(card* card1, card* card2){
 	card tmpCard;
-	tmpCard->face = card1->face;
-	tmpCard->suit = card1->suit;
-	tmpCard->listP = NULL;
+	tmpCard.face = card1->face;
+	tmpCard.suit = card1->suit;
+	tmpCard.listP = NULL;
 	card1->face = card2->face;
 	card1->suit = card2->suit;
-	card2->face = tmpCard->face;
-	card2->suit = tmpCard->suit;
+	card2->face = tmpCard.face;
+	card2->suit = tmpCard.suit;
 	return;
 }
 
@@ -77,7 +77,7 @@ void shuffle_deck(card* deck[]) {
 
 void shuffle_deck2(card* deck[]){
 	srand((int)time(0));
-	card* tmp 
+	card* tmp;
 	int i = 0;
 	for(i = 0; i < 52; i++){
 		

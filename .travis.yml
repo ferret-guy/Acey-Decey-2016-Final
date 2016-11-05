@@ -1,0 +1,4 @@
+language: C
+compiler: gcc
+script: 
+  - gcc deck_functions.c deck_functions.h main.c -o main.exe
