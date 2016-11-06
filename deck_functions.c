@@ -77,10 +77,11 @@ void shuffle_deck(card* deck[]) {
 
 void shuffle_deck2(card* deck[]){
 	srand((int)time(0));
-	card* tmp 
-	int i = 0;
-	for(i = 0; i < 52; i++){
-		
+	int i = 0, j = 0;
+	for(j = 0; j < 600; j++){
+		for(i = 0; i < 52; i++){
+			swap_cards(deck[i], deck[rand() % 52])
+		}
 	}
 }
 
