@@ -1,4 +1,6 @@
 language: C
 compiler: gcc
+before_script:
+  - test.sh
 script: 
   - gcc deck_functions.c deck_functions.h main.c -o main.exe -std=c99
