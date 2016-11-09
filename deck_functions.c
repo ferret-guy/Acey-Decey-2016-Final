@@ -105,5 +105,4 @@ void create_deck(card* deck[]) {
 	for (int i = 0; i < 51; i++) {
 		card_insertAfter(deck[i], deck[i + 1]);
 	}
-	shuffle_deck(deck);
 }
