@@ -21,7 +21,7 @@ int main(void) {
 	head->next = NULL;
 	player * curr;
 	card * deck[52];
-	
+
 	wprintf(L"Welcome to Acey Deucy!\n\nPlease enter the number of players: ");
 	scanf("%d", &numOfPlayers);
 	if (numOfPlayers < 1) {
@@ -39,7 +39,7 @@ int main(void) {
 		wchar_t name[100];
 		float bank_roll;
 		wprintf(L"\nEnter player %d's name: ", i);
-		fseek(stdin,0,SEEK_END);
+		fseek(stdin, 0, SEEK_END);
 		wscanf(L"%99[0-9a-zA-Z ]", name);
 		wprintf(L"Enter player %d's bank ammount: ", i);
 		wscanf(L"%f", &bank_roll);
@@ -50,7 +50,8 @@ int main(void) {
 	curr = head;
 	while(curr->next != NULL) {
 		curr = curr->next;
-		wprintf(L"Player name: %s, Player cash: $%.2f\n", curr->name, curr->bank_roll);
+		wprintf(L"Player name: %s, Player cash: $%.2f\n",
+				curr->name, curr->bank_roll);
 	}
 
 	create_deck(deck);
