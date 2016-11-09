@@ -5,6 +5,10 @@
 #include <stdio.h>
 #include <wchar.h>
 
+#ifdef linux
+#include <sys/io.h>
+#endif
+
 int main(void) {
 	card * deck[52];
 

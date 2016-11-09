@@ -5,6 +5,10 @@
 #include <stdio.h>
 #include <wchar.h>
 
+#ifdef linux
+#include <sys/io.h>
+#endif
+
 typedef struct player_s {
 	wchar_t name[100];
 	float bank_roll;
