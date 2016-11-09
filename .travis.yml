@@ -1,5 +1,7 @@
 language: C
 compiler: gcc
+before_install:
+  - sudo apt-get install libbsd-dev
 before_script:
   - python cpplint.py --extensions=c,h --filter=-whitespace/tab,-legal/copyright,-readability/casting,-runtime/threadsafe_fn,-build/include deck_functions.c deck_functions.h main.c Midpoint.c
 script: 
