@@ -2,6 +2,7 @@
 #include <fcntl.h>
 #include <wchar.h>
 #include <stdio.h>
+#include <io.h>
 
 int main(void) {
 	card * deck[52];
