@@ -1,11 +1,13 @@
-#include<stdio.h>
-#include<stdlib.h>
-#include<time.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <fcntl.h>
+#include <wchar.h>
+#include <time.h>
 
 #include "deck_functions.h"
 
 // Creates a card with given face, suit, and pointer
-void card_create(card* thisCard, char inSuit, int inFace, card* nextCard) {
+void card_create(card* thisCard, wchar_t inSuit, int inFace, card* nextCard) {
 	thisCard->face = inFace;
 	thisCard->suit = inSuit;
 	thisCard->listP = nextCard;
@@ -34,7 +36,22 @@ void swap_cards(card* card1, card* card2) {
 
 void print_deck(card* deck[]) {
 	for (int i = 0; i < 52; i++) {
-		printf("%d of %c\n", deck[i]->face, deck[i]->suit);
+		switch(deck[i]->face) {
+			case 11:
+				wprintf(L"Jack of %c\n", deck[i]->suit);
+				break;
+			case 12:
+				wprintf(L"Jack of %c\n", deck[i]->suit);
+				break;
+			case 13:
+				wprintf(L"Queen of %c\n", deck[i]->suit);
+				break;
+			case 14:
+				wprintf(L"King of %c\n", deck[i]->suit);
+				break;
+			default:
+				wprintf(L"%d of %c\n", deck[i]->face, deck[i]->suit);
+		}
 	}
 }
 
@@ -77,7 +94,7 @@ void shuffle_deck2(card* deck[]) {
 }
 
 void create_deck(card* deck[]) {
-	char suit = 's';
+	wchar_t suit = L'♠';
 	int face = 14;
 
 	for (int i = 0; i < 52; i++) {
@@ -85,15 +102,16 @@ void create_deck(card* deck[]) {
 		deck[i] = (card*)malloc(sizeof(card));
 	}
 	// Create entire deck in order A-K  spade->heart->club->diamond
+	// 2-10, 11:Jack, 12:Queen, 13:King, 14:Ace
 	for (int i = 0; i < 52; i++) {
 		card_create(deck[i], suit, face, NULL);
 		if (face == 13) {
-			if (suit == 's') {
-				suit = 'h';
-			} else if (suit == 'h') {
-				suit = 'c';
-			} else if (suit == 'c') {
-				suit = 'd';
+			if (suit == L'♠') {
+				suit = L'♥';
+			} else if (suit == L'♥') {
+				suit = L'♣';
+			} else if (suit == L'♣') {
+				suit = L'♦';
 			}
 		}
 		if (face == 14) {
