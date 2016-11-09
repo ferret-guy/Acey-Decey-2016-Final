@@ -6,7 +6,7 @@
 #include <wchar.h>
 
 #ifdef linux
-#include <sys/io.h>
+#include <bsd/unistd.h>
 #endif
 
 int main(void) {

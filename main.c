@@ -4,7 +4,10 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <wchar.h>
-#include <io.h>
+
+#ifdef linux
+#include <bsd/unistd.h>
+#endif
 
 typedef struct player_s {
 	wchar_t name[100];
