@@ -1,7 +1,9 @@
 language: C
 compiler: gcc
+before_install:
+  - sudo apt-get install libbsd-dev
 before_script:
   - python cpplint.py --extensions=c,h --filter=-whitespace/tab,-legal/copyright,-readability/casting,-runtime/threadsafe_fn,-build/include deck_functions.c deck_functions.h main.c Midpoint.c
 script: 
-  - gcc deck_functions.c deck_functions.h main.c -o main.exe -std=c99
-  - gcc deck_functions.c deck_functions.h Midpoint.c -o midpoint.exe -std=c99
+  - gcc deck_functions.c deck_functions.h main.c -o main.exe -std=c99 -lbsd
+  - gcc deck_functions.c deck_functions.h Midpoint.c -o midpoint.exe -std=c99 -lbsd

@@ -1,8 +1,13 @@
 #include "deck_functions.h"
+#include <stdlib.h>
+#include <string.h>
 #include <fcntl.h>
-#include <wchar.h>
 #include <stdio.h>
-#include <io.h>
+#include <wchar.h>
+
+#ifdef linux
+#include <bsd/unistd.h>
+#endif
 
 int main(void) {
 	card * deck[52];
