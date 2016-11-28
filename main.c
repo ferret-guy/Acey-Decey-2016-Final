@@ -7,6 +7,8 @@
 #include <stdio.h>
 #include <wchar.h>
 
+#define R_OK 4
+
 typedef struct player_s {
 	wchar_t name[100];
 	float bank_roll;
@@ -17,6 +19,8 @@ typedef struct player_s {
 int cardNumber = 0;
 // Used in order for the signal handeler to work
 player * signalHead;
+int roundOne = 1;
+float pot = 0;
 
 // Function to set cursor position (only works on windows)
 void gotoxy(int x, int y){
@@ -49,7 +53,7 @@ void print_card(int i, card* c){
 	}
 	gotoxy(i * 7, 0);
 	wprintf(L"+-----+");
-	gotoxy(i * 7, 1);
+	gotoxy(i * 7, 1);									       	 	  	
 	wprintf(L"|%-3s  |", cardChar);
 	gotoxy(i * 7, 2);
 	wprintf(L"|     |");
@@ -96,13 +100,15 @@ card * nextCard(card * deck[]){
 	return deck[cardNumber - 1];
 }
 
+// Reads in players from file assembling them into a linked list
 player * readInFile(char fileName[]){
 	FILE * inFile = fopen(fileName, "r");
-	player* head = malloc(sizeof(struct player_s));
+	player * head = malloc(sizeof(struct player_s));
 	head->next = NULL;
-	player* curr = head;
+	player * curr = head;
 	wchar_t name[100];
 	float bank_roll;
+	fwscanf(inFile, L"%d\t%f\n", &roundOne, &pot);
 	while (fwscanf(inFile, L"%99[^\n\t]\t%f\n", name, &bank_roll) == 2){
 		// Initilize current node
 		curr->next = malloc(sizeof(struct player_s));
@@ -115,9 +121,10 @@ player * readInFile(char fileName[]){
 }
 
 // Writes the output file
-void writeOutFile(player * head){
-	FILE * outFile = fopen("out.txt", "w");
+void writeOutFile(player * head, char fileName[]){
+	FILE * outFile = fopen(fileName, "w");
 	player * curr = head;
+	fwprintf(outFile, L"%d\t%f\n", roundOne, pot);
 	while(curr->next != NULL) {
 		curr = curr->next;
 		fwprintf(outFile, L"%s\t%f\n", curr->name, curr->bank_roll);
@@ -129,12 +136,12 @@ void writeOutFile(player * head){
 void quitHandeler(int sig){
 	system("cls");
 	wprintf(L"Writting current players and bankrolls to file...");
-	writeOutFile(signalHead);
+	writeOutFile(signalHead, "GameFile.txt");
 	exit(0);
 }
 
 // Checks if anyone has won, and declares the winner exiting the progam
-void checkWin(player * head, int pot){
+void checkWin(player * head){
 	int playersWinning = 0;
 	player * curr = head;
 	player * winner;
@@ -148,13 +155,13 @@ void checkWin(player * head, int pot){
 	}
 	if (playersWinning == 0){
 		wprintf(L"Game Over everyone is out of money!");
-		writeOutFile(head);
+		writeOutFile(head, "Results.txt");
 		exit(0);
 	} else if (playersWinning == 1){
 		wprintf(L"%s Wins with $%.2f!", winner->name, winner->bank_roll);
-		writeOutFile(head);
+		writeOutFile(head, "Results.txt");
 		exit(0);
-	} else if (pot <= 0){
+	} else if (pot < 0.01){
 		wprintf(L"Game Over pot is out of money!");
 		wprintf(L"Final standings:");
 		curr = head;
@@ -162,7 +169,7 @@ void checkWin(player * head, int pot){
 			curr = curr->next;
 			wprintf(L"%s has $%.2f", curr->name, curr->bank_roll);
 		}
-		writeOutFile(head);
+		writeOutFile(head, "Results.txt");
 		exit(0);
 	}
 }
@@ -171,16 +178,19 @@ void checkWin(player * head, int pot){
 void statusBar(player * head, player * active){
 	gotoxy(0, 17);
 	player * curr = head;
-	curr = head;
 	while(curr->next != NULL) {
 		curr = curr->next;
-		// Get a nick name thjat is the first 10 chars or until a space
+		// Get a nick name that is the first 10 chars or until a space
 		wchar_t nick[11];
 		swscanf(curr->name, L"%10s", &nick);
 		if (curr == active){
 			wprintf(L"->  %10s  $%.2f\n\n", nick, curr->bank_roll);
 		} else {
-			wprintf(L"    %10s  $%.2f\n\n", nick, curr->bank_roll);
+			if (curr->bank_roll < 0){
+				wprintf(L"    %10s is out!\n\n", nick, curr->bank_roll);
+			} else {
+				wprintf(L"    %10s  $%.2f\n\n", nick, curr->bank_roll);
+			}
 		}
 	}
 }
@@ -189,12 +199,12 @@ void statusBar(player * head, player * active){
 player * get_players() {
 	wchar_t c;
 	// Check if we already have an infile
-	if (access("out.txt", R_OK) == 0){
-		wprintf(L"out.txt exists load it (y,n)? ");
+	if (access("GameFile.txt", R_OK) == 0){
+		wprintf(L"GameFile.txt exists load it (y,n)? ");
 		fseek(stdin, 0, SEEK_END);
 		wscanf(L"%1c", &c);
 		if ((c == L'Y' || c == L'y')){
-			return readInFile("out.txt");
+			return readInFile("GameFile.txt");
 		}
 	}
 	// Initilize player linked list
@@ -234,8 +244,11 @@ player * get_players() {
 			if (!(c == L'Y' || c == L'y')) {break;}
 		}
 	}
+	pot = player_ante(head);
 	return head;
 }
+
+// TODO/maybe player name only reads 99 characters
 
 // Main game function
 int main(int argc, char **argv) {
@@ -286,10 +299,7 @@ int main(int argc, char **argv) {
 	}
 
 	// Initilize main loop
-	curr = head;
 	float bet = 0;
-	float pot = player_ante(head);
-	int roundOne = 1;
 	card *card1, *card2, *card3;
 	// Run the game
 	for(;;) {
@@ -300,7 +310,7 @@ int main(int argc, char **argv) {
 			system("cls");
 
 			// Check if this person is in play
-			if (curr->bank_roll == 0){
+			if (curr->bank_roll < 0.01){
 				wprintf(L"%s Does not have enough money to play!\n", curr->name);
 				curr->bank_roll = -1;
 				goto end;
@@ -367,9 +377,9 @@ int main(int argc, char **argv) {
 					pot = 0;
 				}
 			}
-			// Check if card is eather of the end cards
+			// Check if card is either of the end cards
 			else if (card1->face == card2->face || card2->face == card3->face){
-				if (curr->bank_roll >= bet*2){
+				if (curr->bank_roll > bet*2){
 					wprintf(L"Cards are the same! you lose double your bet!");
 					pot += bet*2;
 					curr->bank_roll -= bet*2;
@@ -389,7 +399,7 @@ int main(int argc, char **argv) {
 			// I'm so sorry
 			end:
 			gotoxy(0, 14);
-			checkWin(head, pot);
+			checkWin(head);
 			fseek(stdin, 0, SEEK_END);
 			wprintf(L"Press enter to continue");
 			while (c != L'\n') { c = fgetwc(stdin); }
