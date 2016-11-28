@@ -310,7 +310,7 @@ int main(int argc, char **argv) {
 			system("cls");
 
 			// Check if this person is in play
-			if (curr->bank_roll < 0.01){
+			if (curr->bank_roll < 0.01 && curr->bank_roll > -1){
 				wprintf(L"%s Does not have enough money to play!\n", curr->name);
 				curr->bank_roll = -1;
 				goto end;
