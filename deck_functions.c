@@ -41,13 +41,13 @@ void print_deck(card* deck[]) {
 				wprintf(L"Jack of %c\n", deck[i]->suit);
 				break;
 			case 12:
-				wprintf(L"Jack of %c\n", deck[i]->suit);
-				break;
-			case 13:
 				wprintf(L"Queen of %c\n", deck[i]->suit);
 				break;
-			case 14:
+			case 13:
 				wprintf(L"King of %c\n", deck[i]->suit);
+				break;
+			case 14:
+				wprintf(L"Ace of %c\n", deck[i]->suit);
 				break;
 			default:
 				wprintf(L"%d of %c\n", deck[i]->face, deck[i]->suit);
